@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+</head>
+<body>
+<h1>login form</h1>
+<pre>ID:    <input class="id" type="text" size="50"><br></pre>
+<pre>PW:    <input class="pw" type="text" size="50"><br></pre>
+<input class="id-pw-submit" type="button" value="Enter">
+
+<script>
+    {#id input#}
+    document.querySelector('.id').focus();
+    document.querySelector(".id").onkeyup = function (e){
+        if (e === 13){
+            document.querySelector(".id-pw-submit").click();
+        }
+    };
+
+    {# pw input #}
+    document.querySelector('.pw').focus();
+    document.querySelector(".pw").onkeyup = function (e){
+        if (e === 13){
+            document.querySelector(".id-pw-submit").click();
+        }
+    };
+
+    {# submit button pressed #}
+    let submit = document.querySelector(".id-pw-submit");
+
+    submit.addEventListener("click", e => {
+        let user_id = document.querySelector(".id").value;
+        let pw = document.querySelector(".pw").value;
+        let data = {
+            'user_id': user_id,
+            "pw": pw
+        }
+        $.ajax({
+            url: '{% url 'chat:login' %}',
+            type: "POST",
+            headers: {
+                'X-CSRFTOKEN' : '{{ csrf_token }}'
+            },
+            data : JSON.stringify(data),
+            success: function (data){
+                if(data.stat == 1){
+                    window.location.pathname = '/chat/index/';
+                }
+                else{
+                    alert("Wrong ID or PW!!!");
+                }
+            },
+            error: function(data){}
+        })
+    })
+</script>
+
+</body>
+</html>
